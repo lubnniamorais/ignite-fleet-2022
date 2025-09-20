@@ -29,7 +29,8 @@
       },
       "correctness": {
         "useExhaustiveDependencies": "off",
-        "noUnreachable": "off"
+        "noUnreachable": "off",
+        "noUnusedImports": "warn"
       },
       "complexity": {
         "noExtraBooleanCast": "off",
