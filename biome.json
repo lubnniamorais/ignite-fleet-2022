@@ -54,8 +54,7 @@
       "quoteStyle": "single",
       "semicolons": "always",
       "trailingCommas": "es5",
-      "bracketSpacing": true,
-      "attributePosition": "auto"
+      "bracketSpacing": true
     }
   }
 }
