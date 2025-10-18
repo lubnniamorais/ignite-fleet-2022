@@ -3,4 +3,6 @@ declare module '@env' {
   export const IOS_CLIENT_ID: string;
   export const WEB_CLIENT_ID: string;
   export const REALM_APP_ID: string;
+  export const SUPABASE_URL: string;
+  export const SUPABASE_PUBLIC_ANON: string;
 }

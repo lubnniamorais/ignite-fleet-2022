@@ -4,7 +4,7 @@ import {
   Roboto_700Bold,
   useFonts,
 } from '@expo-google-fonts/roboto';
-import { AppProvider, UserProvider } from '@realm/react';
+// import { AppProvider, UserProvider } from '@realm/react';
 import { StatusBar } from 'react-native';
 import { ThemeProvider } from 'styled-components/native';
 
@@ -22,17 +22,17 @@ export default function App() {
   }
 
   return (
-    <AppProvider id={REALM_APP_ID}>
-      <ThemeProvider theme={theme}>
-        <StatusBar
-          barStyle='light-content'
-          backgroundColor='transparent'
-          translucent
-        />
-        <UserProvider fallback={SignIn}>
-          <Home />
-        </UserProvider>
-      </ThemeProvider>
-    </AppProvider>
+    // <AppProvider id={REALM_APP_ID}>
+    <ThemeProvider theme={theme}>
+      <StatusBar
+        barStyle='light-content'
+        backgroundColor='transparent'
+        translucent
+      />
+      {/* <UserProvider fallback={SignIn}> */}
+      <SignIn />
+      {/* </UserProvider> */}
+    </ThemeProvider>
+    // </AppProvider>
   );
 }
