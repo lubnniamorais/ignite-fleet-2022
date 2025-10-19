@@ -17,7 +17,6 @@ GoogleSignin.configure({
 
 export function SignIn() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-  // const app = useApp();
 
   async function handleGoogleSignIn() {
     try {
@@ -26,14 +25,15 @@ export function SignIn() {
       const { data } = await GoogleSignin.signIn();
 
       if (data?.idToken) {
+        // 🔹 Login com Supabase usando o idToken do Google
         const credential = await supabase.auth.signInWithIdToken({
           provider: 'google',
           token: data.idToken,
         });
 
-        console.log(credential);
+        console.log('Usuário logado:', credential.data.user);
 
-        // await app.logIn(credential);
+        // 👉 O App.tsx vai automaticamente detectar a nova sessão via onAuthStateChange
       } else {
         Alert.alert('Erro', 'Nao foi possivel conectar ao Google');
       }
