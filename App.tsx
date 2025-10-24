@@ -11,7 +11,8 @@ import { ThemeProvider } from 'styled-components/native';
 
 import { Loading } from './src/components/Loading';
 import { supabase } from './src/lib/supabase';
-import { Home } from './src/screens/Home';
+import { Routes } from './src/routes';
+
 import { SignIn } from './src/screens/SignIn';
 import theme from './src/theme';
 
@@ -49,7 +50,7 @@ export default function App() {
         backgroundColor='transparent'
         translucent
       />
-      {session ? <Home /> : <SignIn />}
+      {session ? <Routes /> : <SignIn />}
     </ThemeProvider>
   );
 }

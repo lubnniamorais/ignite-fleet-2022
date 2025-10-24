@@ -47,7 +47,9 @@ export function HomeHeader() {
     loadUser();
   }, []);
 
-  if (loading) return <Loading />;
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+  }
 
   return (
     <Container>
@@ -62,7 +64,7 @@ export function HomeHeader() {
         <Name>{user?.name}</Name>
       </Greeting>
 
-      <TouchableOpacity>
+      <TouchableOpacity activeOpacity={0.7} onPress={handleSignOut}>
         <PowerIcon size={32} color={theme.COLORS.GRAY_400} />
       </TouchableOpacity>
     </Container>
