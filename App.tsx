@@ -7,6 +7,7 @@ import { Session } from '@supabase/supabase-js';
 
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from 'styled-components/native';
 
 import { Loading } from './src/components/Loading';
@@ -45,12 +46,14 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <StatusBar
-        barStyle='light-content'
-        backgroundColor='transparent'
-        translucent
-      />
-      {session ? <Routes /> : <SignIn />}
+      <SafeAreaProvider>
+        <StatusBar
+          barStyle='light-content'
+          backgroundColor='transparent'
+          translucent
+        />
+        {session ? <Routes /> : <SignIn />}
+      </SafeAreaProvider>
     </ThemeProvider>
   );
 }

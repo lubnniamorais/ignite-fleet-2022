@@ -1,6 +1,7 @@
 import { PowerIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { supabase } from '../../lib/supabase';
 
@@ -18,6 +19,11 @@ interface IUserData {
 export function HomeHeader() {
   const [user, setUser] = useState<IUserData | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Para evitar que o componente fique com o padding-top de 0
+  // Renderiza nas áreas seguras da tela
+  const insets = useSafeAreaInsets();
+  const paddingTop = insets.top + 32;
 
   useEffect(() => {
     async function loadUser() {
@@ -52,7 +58,7 @@ export function HomeHeader() {
   }
 
   return (
-    <Container>
+    <Container style={{ paddingTop }}>
       <Picture
         source={{ uri: user?.avatar_url }}
         placeholder='L184i9ofa}of00ayjtay~qj[f6ju'
