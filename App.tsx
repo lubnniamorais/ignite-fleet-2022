@@ -11,9 +11,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from 'styled-components/native';
 
 import { Loading } from './src/components/Loading';
+import { RealmProvider } from './src/lib/realm';
 import { supabase } from './src/lib/supabase';
 import { Routes } from './src/routes';
-
 import { SignIn } from './src/screens/SignIn';
 import theme from './src/theme';
 
@@ -52,7 +52,13 @@ export default function App() {
           backgroundColor='transparent'
           translucent
         />
-        {session ? <Routes /> : <SignIn />}
+        {session ? (
+          <RealmProvider>
+            <Routes />
+          </RealmProvider>
+        ) : (
+          <SignIn />
+        )}
       </SafeAreaProvider>
     </ThemeProvider>
   );
