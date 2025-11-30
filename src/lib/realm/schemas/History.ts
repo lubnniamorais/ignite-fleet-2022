@@ -7,14 +7,15 @@ type GenerateProps = {
   license_plate: string;
   description: string;
 };
-export class Historic extends Realm.Object<Historic> {
+
+export class Historic extends Realm.Object {
   _id!: string;
   user_id!: string;
   license_plate!: string;
   description!: string;
   status!: string;
-  created_at!: string;
-  updated_at!: string
+  created_at!: Date;
+  updated_at!: Date;
 
   static generate({ user_id, license_plate, description }: GenerateProps) {
     return {
@@ -28,7 +29,7 @@ export class Historic extends Realm.Object<Historic> {
     };
   }
 
-  static schema = {
+  static schema: Realm.ObjectSchema = {
     // Nome da coleção
     name: 'Historic',
     // Chave primária
@@ -38,10 +39,7 @@ export class Historic extends Realm.Object<Historic> {
     properties: {
       // Utilizar com o '_' é o padrão do realmDB
       _id: 'uuid',
-      user_id: {
-        type: 'string',
-        indexed: true,
-      },
+      user_id: { type: 'string', indexed: true },
       license_plate: 'string',
       description: 'string',
       status: 'string',
