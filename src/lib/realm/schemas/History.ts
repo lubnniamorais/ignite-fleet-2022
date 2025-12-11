@@ -1,4 +1,5 @@
 import { Realm } from '@realm/react';
+import { BSON } from 'realm';
 
 // Utilizamos classes para criar o nosso schema
 
@@ -9,7 +10,7 @@ type GenerateProps = {
 };
 
 export class Historic extends Realm.Object {
-  _id!: string;
+  _id!: BSON.UUID;
   user_id!: string;
   license_plate!: string;
   description!: string;
