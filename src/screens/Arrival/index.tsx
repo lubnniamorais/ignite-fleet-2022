@@ -92,15 +92,15 @@ export function Arrival() {
         <Label>Finalidade</Label>
 
         <Description>{historic?.description}</Description>
-
-        {historic?.status === 'departure' && (
-          <Footer>
-            <ButtonIcon icon={XIcon} onPress={handleRemoveVehicleUsage} />
-
-            <Button title='Registrar chegada' onPress={handleArrivalRegister} />
-          </Footer>
-        )}
       </Content>
+
+      {historic?.status === 'departure' && (
+        <Footer>
+          <ButtonIcon icon={XIcon} onPress={handleRemoveVehicleUsage} />
+
+          <Button title='Registrar chegada' onPress={handleArrivalRegister} />
+        </Footer>
+      )}
     </Container>
   );
 }
