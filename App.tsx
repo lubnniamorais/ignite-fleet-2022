@@ -1,5 +1,5 @@
 import 'react-native-get-random-values';
-import './src/libs/dayjs';
+import './src/lib/dayjs';
 
 import {
   Roboto_400Regular,
@@ -7,12 +7,10 @@ import {
   useFonts,
 } from '@expo-google-fonts/roboto';
 import { Session } from '@supabase/supabase-js';
-
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from 'styled-components/native';
-
 import { Loading } from './src/components/Loading';
 import { RealmProvider } from './src/lib/realm';
 import { supabase } from './src/lib/supabase';
