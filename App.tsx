@@ -7,11 +7,13 @@ import {
   useFonts,
 } from '@expo-google-fonts/roboto';
 import { Session } from '@supabase/supabase-js';
+import { WifiSlashIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from 'styled-components/native';
 import { Loading } from './src/components/Loading';
+import { TopMessage } from './src/components/TopMessage';
 import { RealmProvider } from './src/lib/realm';
 import { supabase } from './src/lib/supabase';
 import { Routes } from './src/routes';
@@ -55,6 +57,9 @@ export default function App() {
           backgroundColor='transparent'
           translucent
         />
+
+        <TopMessage title='Você está off-line.' icon={WifiSlashIcon} />
+
         {session ? (
           <RealmProvider>
             <Routes />

@@ -39,7 +39,7 @@ export function Departure() {
         licensePlateRef.current?.focus();
         return Alert.alert(
           'Placa inválida',
-          'A placa é inválida. Por favor, informe a plca corretado veículo'
+          'A placa é inválida. Por favor, informe a placa correta do veículo'
         );
       }
 
