@@ -6,6 +6,7 @@ import {
   Roboto_700Bold,
   useFonts,
 } from '@expo-google-fonts/roboto';
+import { useNetInfo } from '@react-native-community/netinfo';
 import { Session } from '@supabase/supabase-js';
 import { WifiSlashIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
@@ -24,6 +25,8 @@ export default function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
+
+  const netInfo = useNetInfo();
 
   useEffect(() => {
     // 🔹 1. Verifica sessão existente no cache local
@@ -58,7 +61,9 @@ export default function App() {
           translucent
         />
 
-        <TopMessage title='Você está off-line.' icon={WifiSlashIcon} />
+        {!netInfo.isConnected && (
+          <TopMessage title='Você está off-line.' icon={WifiSlashIcon} />
+        )}
 
         {session ? (
           <RealmProvider>
