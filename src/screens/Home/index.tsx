@@ -75,10 +75,18 @@ export function Home() {
     navigate('arrival', { id });
   }
 
+  function progressNotification(transferred: number, transferable: number) {
+    const percentage = (transferred / transferable) * 100;
+
+    console.log('Transferindo => ', `${percentage}%`);
+  }
+
+  // USE EFFECT PARA TRAZER O VEÍCULO EM USO
   useEffect(() => {
     fetchVehicleInUse();
   }, []);
 
+  // USE EFFECT PARA SABER SE O USUÁRIO ESTÁ CONECTADO OU NÃO
   useEffect(() => {
     realm.addListener('change', () => fetchVehicleInUse());
 
@@ -88,8 +96,28 @@ export function Home() {
         realm.removeListener('change', fetchVehicleInUse);
       }
     };
+  }, [realm]);
+
+  // USE EFFECT PARA ACOMPANHAR O PROGRESSO DE ENVIO DE DADOS
+  useEffect(() => {
+    const syncSession = realm.syncSession;
+
+    // Se a sincronização não estiver disponível, então não continuamos com o fluxo da aplicação
+    if (!syncSession) {
+      return;
+    }
+
+    // Registrando o progresso
+    syncSession.addProgressNotification(
+      Realm.ProgressDirection.Upload,
+      Realm.ProgressMode.ReportIndefinitely,
+      progressNotification
+    );
+
+    return () => syncSession.removeProgressNotification(progressNotification);
   }, []);
 
+  // USE EFFECT PARA TRAZER O HISTÓRICO
   useEffect(() => {
     fetchHistoric();
   }, [historic]);
