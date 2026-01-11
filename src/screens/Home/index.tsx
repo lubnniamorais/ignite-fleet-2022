@@ -2,13 +2,17 @@ import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { HistoricCard, HistoricCardProps } from '../../components/HistoricCard';
 import { HomeHeader } from '../../components/HomeHeader';
 
+import {
+  getLastSyncTimestamp,
+  saveLastSyncTimestamp,
+} from '../../lib/asyncStorage/asyncStorage';
 import { useQuery, useRealm } from '../../lib/realm';
 import { Historic } from '../../lib/realm/schemas/History';
-
 import { CarStatus } from '../CarStatus';
 
 import { Container, Content, Label, Title } from './styles';
@@ -47,17 +51,19 @@ export function Home() {
     }
   }
 
-  function fetchHistoric() {
+  async function fetchHistoric() {
     try {
       const response = historic.filtered(
         "status = 'arrival' SORT(created_at DESC)"
       );
 
+      const lastSync = await getLastSyncTimestamp();
+
       const formattedHistoric = response.map((item) => {
         return {
           id: item._id.toString(),
           licensePlate: item.license_plate,
-          isSync: false,
+          isSync: lastSync > item.updated_at.getTime(),
           created: dayjs(item.created_at).format(
             `[Saída em] DD/MM/YYYY [às] HH:mm`
           ),
@@ -75,10 +81,21 @@ export function Home() {
     navigate('arrival', { id });
   }
 
-  function progressNotification(transferred: number, transferable: number) {
+  async function progressNotification(
+    transferred: number,
+    transferable: number
+  ) {
     const percentage = (transferred / transferable) * 100;
 
-    console.log('Transferindo => ', `${percentage}%`);
+    if (percentage === 100) {
+      await saveLastSyncTimestamp();
+      fetchHistoric();
+
+      Toast.show({
+        type: 'info',
+        text1: 'Todos os dados estão sincronizados.',
+      });
+    }
   }
 
   // USE EFFECT PARA TRAZER O VEÍCULO EM USO

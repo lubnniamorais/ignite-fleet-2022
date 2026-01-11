@@ -17,7 +17,7 @@ export class Historic extends Realm.Object {
   status!: string;
   created_at!: Date;
   updated_at!: Date;
-  isSynced!: boolean;
+  isSync!: boolean;
 
   static generate({ user_id, license_plate, description }: GenerateProps) {
     return {
@@ -28,7 +28,7 @@ export class Historic extends Realm.Object {
       status: 'departure', // Inicialmente o status é 'departure'
       created_at: new Date(),
       updated_at: new Date(),
-      isSynced: false, // <--- Todo novo registro nasce como falso
+      isSync: false, // <--- Todo novo registro nasce como falso
     };
   }
 
@@ -48,7 +48,7 @@ export class Historic extends Realm.Object {
       status: 'string',
       created_at: 'date',
       updated_at: 'date',
-      isSynced: { type: 'bool', default: false }, // <--- Defina no schema do Realm
+      isSync: { type: 'bool', default: false }, // <--- Defina no schema do Realm
     },
   };
 }
