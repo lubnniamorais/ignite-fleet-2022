@@ -18,6 +18,7 @@ import { TextAreaInput } from '../../components/TextAreaInput';
 
 import { Historic } from '../../lib/realm/schemas/History';
 
+import { getAddressLocation } from '../../utils/getAddressLocation';
 import { licensePlateValidate } from '../../utils/licensePlateValidate';
 
 import { Container, Content, Message } from './styles';
@@ -58,7 +59,10 @@ export function Departure() {
         timeInterval: 1000,
       },
       (location) => {
-        console.log(location);
+        getAddressLocation(location.coords).then((address) => {
+          // Retornando o endereço
+          console.log(address);
+        });
       }
     ).then((response) => {
       subscription = response;
