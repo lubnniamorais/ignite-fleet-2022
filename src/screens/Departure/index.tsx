@@ -8,12 +8,12 @@ import {
 } from 'expo-location';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, ScrollView, TextInput } from 'react-native';
-
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
 import { LicensePlateInput } from '../../components/LicensePlateInput';
+import { Loading } from '../../components/Loading';
 import { TextAreaInput } from '../../components/TextAreaInput';
 
 import { Historic } from '../../lib/realm/schemas/History';
@@ -27,6 +27,7 @@ export function Departure() {
   const [description, setDescription] = useState('');
   const [licensePlate, setLicensePlate] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(true);
 
   const [locationForegroundPermission, requestLocationForegroundPermission] =
     useForegroundPermissions();
@@ -59,16 +60,24 @@ export function Departure() {
         timeInterval: 1000,
       },
       (location) => {
-        getAddressLocation(location.coords).then((address) => {
-          // Retornando o endereço
-          console.log(address);
-        });
+        getAddressLocation(location.coords)
+          .then((address) => {
+            // Retornando o endereço
+            console.log(address);
+          })
+          .finally(() => {
+            setIsLoadingLocation(false);
+          });
       }
     ).then((response) => {
       subscription = response;
     });
 
-    return () => subscription.remove();
+    return () => {
+      if (subscription) {
+        subscription.remove();
+      }
+    };
   }, [locationForegroundPermission]);
 
   // Se não tem permissão do usuário, então a mensagem alertando o usuário será exibida
@@ -126,6 +135,12 @@ export function Departure() {
       Alert.alert('Erro', 'Nao foi possivel registrar a saída do veículo');
       setIsRegistering(false);
     }
+  }
+
+  // Se demorar a aparecer o mapa de localização, então o Loading de carregamento
+  // será exibido
+  if (isLoadingLocation) {
+    return <Loading />;
   }
 
   return (
