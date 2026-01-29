@@ -14,13 +14,11 @@ import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
 import { LicensePlateInput } from '../../components/LicensePlateInput';
 import { Loading } from '../../components/Loading';
+import { LocationInfo } from '../../components/LocationInfo';
 import { TextAreaInput } from '../../components/TextAreaInput';
-
 import { Historic } from '../../lib/realm/schemas/History';
-
 import { getAddressLocation } from '../../utils/getAddressLocation';
 import { licensePlateValidate } from '../../utils/licensePlateValidate';
-
 import { Container, Content, Message } from './styles';
 
 export function Departure() {
@@ -28,6 +26,7 @@ export function Departure() {
   const [licensePlate, setLicensePlate] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);
+  const [currentAddress, setCurrentAddress] = useState<string | null>(null);
 
   const [locationForegroundPermission, requestLocationForegroundPermission] =
     useForegroundPermissions();
@@ -63,7 +62,9 @@ export function Departure() {
         getAddressLocation(location.coords)
           .then((address) => {
             // Retornando o endereço
-            console.log(address);
+            if (address) {
+              setCurrentAddress(address);
+            }
           })
           .finally(() => {
             setIsLoadingLocation(false);
@@ -150,6 +151,13 @@ export function Departure() {
       <KeyboardAwareScrollView extraHeight={100}>
         <ScrollView>
           <Content>
+            {currentAddress && (
+              <LocationInfo
+                label='Localização atual'
+                description={currentAddress}
+              />
+            )}
+
             <LicensePlateInput
               ref={licensePlateRef}
               label='Placa do veículo'
