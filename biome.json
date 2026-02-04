@@ -25,7 +25,8 @@
         "noArrayIndexKey": "info",
         "noThenProperty": "off",
         "noExplicitAny": "warn",
-        "noAsyncPromiseExecutor": "off"
+        "noAsyncPromiseExecutor": "off",
+        "noShadowRestrictedNames": "off"
       },
       "correctness": {
         "useExhaustiveDependencies": "off",
