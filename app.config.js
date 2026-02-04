@@ -42,11 +42,17 @@ module.exports = {
     },
     plugins: [
       'expo-font',
-      'expo-location',
-      {
-        locationAlwaysAndWhenInUsePermission:
-          'Allow $(PRODUCT_NAME) to use your location.',
-      },
+      [
+        'expo-location',
+        {
+          locationAlwaysAndWhenInUsePermission:
+            'Allow $(PRODUCT_NAME) to use your location.',
+          locationAlwaysPermission:
+            'Allow $(PRODUCT_NAME) to use your location always.',
+          locationWhenInUsePermission:
+            'Allow $(PRODUCT_NAME) to use your location when open.',
+        },
+      ],
     ],
   },
 };
