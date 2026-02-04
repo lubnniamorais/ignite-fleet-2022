@@ -5,4 +5,5 @@ declare module '@env' {
   export const REALM_APP_ID: string;
   export const SUPABASE_URL: string;
   export const SUPABASE_PUBLIC_ANON: string;
+  export const GOOGLE_MAPS_API_KEY: string;
 }
