@@ -1,8 +1,11 @@
+import { CarIcon } from 'phosphor-react-native';
 import MapView, {
   LatLng,
   MapViewProps,
+  Marker,
   PROVIDER_GOOGLE,
 } from 'react-native-maps';
+import { IconBox } from '../IconBox';
 
 type Props = MapViewProps & {
   // Deixamos como um array de coordenadas, pois será necessário apresentar a rota, e o
@@ -28,6 +31,10 @@ export function Map({ coordinates, ...rest }: Props) {
         longitudeDelta: 0.005,
       }}
       {...rest}
-    />
+    >
+      <Marker coordinate={coordinates[0]}>
+        <IconBox size='SMALL' icon={CarIcon} />
+      </Marker>
+    </MapView>
   );
 }
