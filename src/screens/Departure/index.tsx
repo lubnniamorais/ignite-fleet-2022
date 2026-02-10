@@ -122,6 +122,14 @@ export function Departure() {
         );
       }
 
+      // Validando as coordenadas
+      if (!currentCoords?.latitude && !currentCoords?.longitude) {
+        return Alert.alert(
+          'Localização',
+          'Não foi possível obter a localização atual. Tente novamente!'
+        );
+      }
+
       setIsRegistering(true);
 
       // Função para realizar o cadastro no banco de dados
