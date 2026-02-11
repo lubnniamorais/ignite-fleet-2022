@@ -4,6 +4,7 @@ import {
   LocationAccuracy,
   LocationObjectCoords,
   LocationSubscription,
+  requestBackgroundPermissionsAsync,
   useForegroundPermissions,
   watchPositionAsync,
 } from 'expo-location';
@@ -11,6 +12,7 @@ import { CarIcon } from 'phosphor-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, ScrollView, TextInput } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
 import { LicensePlateInput } from '../../components/LicensePlateInput';
@@ -18,9 +20,12 @@ import { Loading } from '../../components/Loading';
 import { LocationInfo } from '../../components/LocationInfo';
 import { Map } from '../../components/Map';
 import { TextAreaInput } from '../../components/TextAreaInput';
+
 import { Historic } from '../../lib/realm/schemas/History';
+
 import { getAddressLocation } from '../../utils/getAddressLocation';
 import { licensePlateValidate } from '../../utils/licensePlateValidate';
+
 import { Container, Content, Message } from './styles';
 
 export function Departure() {
@@ -103,7 +108,8 @@ export function Departure() {
     );
   }
 
-  function handleDepartureRegister() {
+  // Registrando a saída do veículo
+  async function handleDepartureRegister() {
     try {
       if (!licensePlateValidate(licensePlate)) {
         licensePlateRef.current?.focus();
@@ -131,6 +137,19 @@ export function Departure() {
       }
 
       setIsRegistering(true);
+
+      // Solicitando a permissão de localização em background
+      const backgroundPermissions = await requestBackgroundPermissionsAsync();
+
+      // Verificando se o usuário deu permissão
+      if (!backgroundPermissions.granted) {
+        setIsRegistering(false);
+
+        return Alert.alert(
+          'Localização',
+          'É necessário permitir que o App tenha acesso a localização em segundo plano. Acesse as configurações do dispositivo e habilite "Permitir o tempo todo".'
+        );
+      }
 
       // Função para realizar o cadastro no banco de dados
       realm.write(() => {
