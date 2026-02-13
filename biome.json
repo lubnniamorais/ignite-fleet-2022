@@ -24,7 +24,7 @@
       "suspicious": {
         "noArrayIndexKey": "info",
         "noThenProperty": "off",
-        "noExplicitAny": "warn",
+        "noExplicitAny": "off",
         "noAsyncPromiseExecutor": "off",
         "noShadowRestrictedNames": "off"
       },
