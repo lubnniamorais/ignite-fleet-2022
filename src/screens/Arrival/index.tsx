@@ -9,6 +9,7 @@ import { Header } from '../../components/Header';
 import { getLastSyncTimestamp } from '../../lib/asyncStorage/asyncStorage';
 import { useObject, useRealm } from '../../lib/realm';
 import { Historic } from '../../lib/realm/schemas/History';
+import { stopLocationTask } from '../../tasks/backgroundLocationTask';
 import {
   AsyncMessage,
   Container,
@@ -52,7 +53,7 @@ export function Arrival() {
     goBack();
   }
 
-  function handleArrivalRegister() {
+  async function handleArrivalRegister() {
     try {
       if (!historic) {
         Alert.alert(
@@ -61,6 +62,8 @@ export function Arrival() {
         );
         return;
       }
+
+      await stopLocationTask();
 
       // Aqui garantimos que historic não é null
       if (historic) {

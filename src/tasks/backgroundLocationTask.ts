@@ -4,7 +4,10 @@ import {
   startLocationUpdatesAsync,
   stopLocationUpdatesAsync,
 } from 'expo-location';
+
 import * as TaskManager from 'expo-task-manager';
+
+import { saveStorageLocation } from '../lib/asyncStorage/locationStorage';
 
 // Exportamos a tarefa, pois iremos aproveitar em outros lugares
 // Uma boa prática para criar constantes de configuração é criar o nome em MAIÚSCULO
@@ -17,17 +20,21 @@ TaskManager.defineTask(BACKGROUND_TASK_NAME, async ({ data, error }: any) => {
       throw error;
     }
 
-    const { coords, timestamp } = data.locations[0];
+    if (data) {
+      const { coords, timestamp } = data.locations[0];
 
-    const currentLocation = {
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-      timestamp: timestamp,
-    };
+      const currentLocation = {
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        timestamp: timestamp,
+      };
 
-    console.log(currentLocation);
+      // Salvando a localização no storage
+      await saveStorageLocation(currentLocation);
+    }
   } catch (error) {
     console.log(error);
+    stopLocationTask();
   }
 });
 

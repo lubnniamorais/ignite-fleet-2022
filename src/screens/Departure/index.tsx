@@ -22,10 +22,9 @@ import { Map } from '../../components/Map';
 import { TextAreaInput } from '../../components/TextAreaInput';
 
 import { Historic } from '../../lib/realm/schemas/History';
-
+import { startLocationTask } from '../../tasks/backgroundLocationTask';
 import { getAddressLocation } from '../../utils/getAddressLocation';
 import { licensePlateValidate } from '../../utils/licensePlateValidate';
-
 import { Container, Content, Message } from './styles';
 
 export function Departure() {
@@ -150,6 +149,9 @@ export function Departure() {
           'É necessário permitir que o App tenha acesso a localização em segundo plano. Acesse as configurações do dispositivo e habilite "Permitir o tempo todo".'
         );
       }
+
+      // Iniciando a tarefa de localização
+      await startLocationTask();
 
       // Função para realizar o cadastro no banco de dados
       realm.write(() => {
