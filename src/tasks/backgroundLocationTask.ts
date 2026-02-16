@@ -7,7 +7,10 @@ import {
 
 import * as TaskManager from 'expo-task-manager';
 
-import { saveStorageLocation } from '../lib/asyncStorage/locationStorage';
+import {
+  removeStorageLocations,
+  saveStorageLocation,
+} from '../lib/asyncStorage/locationStorage';
 
 // Exportamos a tarefa, pois iremos aproveitar em outros lugares
 // Uma boa prática para criar constantes de configuração é criar o nome em MAIÚSCULO
@@ -66,6 +69,7 @@ export async function stopLocationTask() {
 
     if (hasStarted) {
       await stopLocationUpdatesAsync(BACKGROUND_TASK_NAME);
+      await removeStorageLocations();
     }
   } catch (error) {
     console.log(error);

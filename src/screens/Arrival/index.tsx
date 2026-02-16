@@ -2,11 +2,15 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+import { LatLng } from 'react-native-maps';
 import { BSON } from 'realm';
+
 import { Button } from '../../components/Button';
 import { ButtonIcon } from '../../components/ButtonIcon';
 import { Header } from '../../components/Header';
+import { Map } from '../../components/Map';
 import { getLastSyncTimestamp } from '../../lib/asyncStorage/asyncStorage';
+import { getStorageLocations } from '../../lib/asyncStorage/locationStorage';
 import { useObject, useRealm } from '../../lib/realm';
 import { Historic } from '../../lib/realm/schemas/History';
 import { stopLocationTask } from '../../tasks/backgroundLocationTask';
@@ -27,6 +31,9 @@ type RouteParamsProps = {
 export function Arrival() {
   const [dataNotSynced, setDataNotSynced] = useState(false);
 
+  // Teremos um array de coordenadas (latitude e longitude)
+  const [coordinates, setCoordinates] = useState<LatLng[]>([]);
+
   const route = useRoute();
 
   const { id } = route.params as RouteParamsProps;
@@ -45,10 +52,12 @@ export function Arrival() {
     ]);
   }
 
-  function removeVehicleUsage() {
+  async function removeVehicleUsage() {
     realm.write(() => {
       realm.delete(historic);
     });
+
+    await stopLocationTask();
 
     goBack();
   }
@@ -63,14 +72,15 @@ export function Arrival() {
         return;
       }
 
-      await stopLocationTask();
-
       // Aqui garantimos que historic não é null
       if (historic) {
         realm.write(() => {
           historic.status = 'arrival';
           historic.updated_at = new Date();
         });
+
+        // Depois que salvamos no banco, aí paramos a tarefa
+        await stopLocationTask();
 
         Alert.alert('Chegada', 'Chegada registrada com sucesso.');
         goBack();
@@ -86,16 +96,30 @@ export function Arrival() {
     }
   }
 
+  async function getLocationsInfo() {
+    const lastSync = await getLastSyncTimestamp();
+
+    const updatedAt = historic!.updated_at.getTime();
+
+    setDataNotSynced(updatedAt > lastSync);
+
+    // Recuperando as coordenadas que foram obtidas pela tarefa em background
+    const locationsStorage = await getStorageLocations();
+    setCoordinates(locationsStorage);
+  }
+
   useEffect(() => {
     // Obtendo a data da ultima sincronização
-    getLastSyncTimestamp().then((lastSync) =>
-      setDataNotSynced(historic!.updated_at.getTime() > lastSync)
-    );
-  }, []);
+    getLocationsInfo();
+  }, [historic]);
 
   return (
     <Container>
       <Header title={title} />
+
+      {/* Se temos coordenadas, vamos renderizar o mapa */}
+      {coordinates.length > 0 && <Map coordinates={coordinates} />}
+
       <Content>
         <Label>Placa do veículo</Label>
 
