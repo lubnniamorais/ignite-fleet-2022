@@ -1,30 +1,40 @@
 import { Realm } from '@realm/react';
 import { BSON } from 'realm';
 
+import { CoordsSchemaProps } from './Coords';
+
 // Utilizamos classes para criar o nosso schema
 
 type GenerateProps = {
   user_id: string;
   license_plate: string;
   description: string;
+  coords: CoordsSchemaProps[];
 };
 
-export class Historic extends Realm.Object {
+export class Historic extends Realm.Object<Historic> {
   _id!: BSON.UUID;
   user_id!: string;
   license_plate!: string;
   description!: string;
+  coords!: CoordsSchemaProps[];
   status!: string;
   created_at!: Date;
   updated_at!: Date;
   isSync!: boolean;
 
-  static generate({ user_id, license_plate, description }: GenerateProps) {
+  static generate({
+    user_id,
+    license_plate,
+    description,
+    coords,
+  }: GenerateProps) {
     return {
       _id: new Realm.BSON.UUID(), // Gerar um ID unico
       user_id,
       license_plate,
       description,
+      coords,
       status: 'departure', // Inicialmente o status é 'departure'
       created_at: new Date(),
       updated_at: new Date(),
@@ -45,6 +55,11 @@ export class Historic extends Realm.Object {
       user_id: { type: 'string', indexed: true },
       license_plate: 'string',
       description: 'string',
+      coords: {
+        // Teremos uma lista de coordenadas
+        type: 'list',
+        objectType: 'Coords', // Referenciamos a classe Coords
+      },
       status: 'string',
       created_at: 'date',
       updated_at: 'date',

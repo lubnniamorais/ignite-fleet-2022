@@ -1,5 +1,5 @@
 import { createRealmContext } from '@realm/react';
-
+import { Coords } from './schemas/Coords';
 import { Historic } from './schemas/History';
 
 // const realmAccessBehavior: Realm.OpenRealmBehaviorConfiguration = {
@@ -15,7 +15,8 @@ import { Historic } from './schemas/History';
 
 export const { RealmProvider, useRealm, useQuery, useObject } =
   createRealmContext({
-    schema: [Historic],
+    schema: [Historic, Coords],
+
     // ✅ Versão do schema para controle de migrações locais
     schemaVersion: 1,
   });
