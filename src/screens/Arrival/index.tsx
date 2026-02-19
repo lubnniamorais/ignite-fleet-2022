@@ -65,18 +65,24 @@ export function Arrival() {
   async function handleArrivalRegister() {
     try {
       if (!historic) {
-        Alert.alert(
+        return Alert.alert(
           'Error',
           'Não foi possível obter os dados para registrar a chegada do veículo.'
         );
-        return;
       }
+
+      // Recuperando as coordenadas salvas pelo AsyncStorage
+      const locations = await getStorageLocations();
 
       // Aqui garantimos que historic não é null
       if (historic) {
         realm.write(() => {
           historic.status = 'arrival';
           historic.updated_at = new Date();
+
+          // Pegando todas as coordenadas obtidas pelo AsyncStorage e adicionando no
+          // banco de dados
+          historic.coords.push(...locations);
         });
 
         // Depois que salvamos no banco, aí paramos a tarefa
@@ -102,14 +108,16 @@ export function Arrival() {
     }
 
     const lastSync = await getLastSyncTimestamp();
-
     const updatedAt = historic.updated_at.getTime();
-
     setDataNotSynced(updatedAt > lastSync);
 
-    // Recuperando as coordenadas que foram obtidas pela tarefa em background
-    const locationsStorage = await getStorageLocations();
-    setCoordinates(locationsStorage);
+    if (historic?.status === 'departure') {
+      // Recuperando as coordenadas que foram obtidas pela tarefa em background
+      const locationsStorage = await getStorageLocations();
+      setCoordinates(locationsStorage);
+    } else {
+      setCoordinates(historic?.coords ?? []);
+    }
   }
 
   useEffect(() => {
