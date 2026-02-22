@@ -1,4 +1,5 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
+import dayjs from 'dayjs';
 import { XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
@@ -8,6 +9,8 @@ import { BSON } from 'realm';
 import { Button } from '../../components/Button';
 import { ButtonIcon } from '../../components/ButtonIcon';
 import { Header } from '../../components/Header';
+import { Loading } from '../../components/Loading';
+import { LocationInfoProps } from '../../components/LocationInfo';
 import { Locations } from '../../components/Locations';
 import { Map } from '../../components/Map';
 import { getLastSyncTimestamp } from '../../lib/asyncStorage/asyncStorage';
@@ -15,6 +18,7 @@ import { getStorageLocations } from '../../lib/asyncStorage/locationStorage';
 import { useObject, useRealm } from '../../lib/realm';
 import { Historic } from '../../lib/realm/schemas/History';
 import { stopLocationTask } from '../../tasks/backgroundLocationTask';
+import { getAddressLocation } from '../../utils/getAddressLocation';
 import {
   AsyncMessage,
   Container,
@@ -34,6 +38,13 @@ export function Arrival() {
 
   // Teremos um array de coordenadas (latitude e longitude)
   const [coordinates, setCoordinates] = useState<LatLng[]>([]);
+  const [departure, setDeparture] = useState<LocationInfoProps>(
+    {} as LocationInfoProps
+  );
+  const [arrival, setArrival] = useState<LocationInfoProps>(
+    {} as LocationInfoProps
+  );
+  const [isLoading, setIsLoading] = useState(true);
 
   const route = useRoute();
 
@@ -119,12 +130,44 @@ export function Arrival() {
     } else {
       setCoordinates(historic?.coords ?? []);
     }
+
+    // Se temos coordendas vamos pegar o nome da rua, de onde o vaículo está saindo
+    if (historic?.coords[0]) {
+      const departureStreetName = await getAddressLocation(historic?.coords[0]);
+
+      setDeparture({
+        label: `Saindo em ${departureStreetName ?? ''}`,
+        description: dayjs(new Date(historic.coords[0].timestamp)).format(
+          'DD/MM/YYYY [às] HH:mm'
+        ),
+      });
+    }
+
+    if (historic.status === 'arrival') {
+      // Obtendo a última posição do veículo
+      const lastLocation = historic.coords[historic.coords.length - 1];
+
+      const arrivalStreetName = await getAddressLocation(lastLocation);
+
+      setArrival({
+        label: `Chegando em ${arrivalStreetName ?? ''}`,
+        description: dayjs(new Date(lastLocation.timestamp)).format(
+          'DD/MM/YYYY [às] HH:mm'
+        ),
+      });
+    }
+
+    setIsLoading(false);
   }
 
   useEffect(() => {
     // Obtendo a data da ultima sincronização
     getLocationsInfo();
   }, [historic]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Container>
@@ -134,10 +177,7 @@ export function Arrival() {
       {coordinates.length > 0 && <Map coordinates={coordinates} />}
 
       <Content>
-        <Locations
-          departure={{ label: 'Saída', description: 'Saída teste' }}
-          arrival={{ label: 'Chegada', description: 'Chegada teste' }}
-        />
+        <Locations departure={departure} arrival={arrival} />
 
         <Label>Placa do veículo</Label>
 
