@@ -25,7 +25,8 @@ import { Historic } from '../../lib/realm/schemas/History';
 import { startLocationTask } from '../../tasks/backgroundLocationTask';
 import { getAddressLocation } from '../../utils/getAddressLocation';
 import { licensePlateValidate } from '../../utils/licensePlateValidate';
-import { Container, Content, Message } from './styles';
+import { openSettings } from '../../utils/openSettings';
+import { Container, Content, Message, MessageContent } from './styles';
 
 export function Departure() {
   const [description, setDescription] = useState('');
@@ -98,11 +99,16 @@ export function Departure() {
       <Container>
         <Header title='Saida' />
 
-        <Message>
-          Você precisa permitir que o aplicativo tenha acesso à localização para
-          utilizar essa funcionalidade. Por favor, acesse as configurações do
-          seu dispositivo,para conceder essa permissão ao aplicativo.
-        </Message>
+        <MessageContent>
+          <Message>
+            Você precisa permitir que o aplicativo tenha acesso à localização
+            para utilizar essa funcionalidade. Por favor, acesse as
+            configurações do seu dispositivo,para conceder essa permissão ao
+            aplicativo.
+          </Message>
+
+          <Button title='Abrir Configurações' onPress={openSettings} />
+        </MessageContent>
       </Container>
     );
   }
@@ -193,20 +199,8 @@ export function Departure() {
 
       <KeyboardAwareScrollView extraHeight={100}>
         <ScrollView>
-          {currentCoords && (
-            <Map
-              coordinates={[
-                {
-                  latitude: -23.5657,
-                  longitude: -46.6515,
-                },
-                {
-                  latitude: -23.5694,
-                  longitude: -46.6467,
-                },
-              ]}
-            />
-          )}
+          {currentCoords && <Map coordinates={[currentCoords]} />}
+
           <Content>
             {currentAddress && (
               <LocationInfo
